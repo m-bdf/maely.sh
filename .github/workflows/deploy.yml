@@ -16,13 +16,23 @@ jobs:
       - uses: cachix/install-nix-action@v20
       - run: nix fmt -- --check flake.nix
 
-      - run: nix develop --command elm-format --validate src/
-      - run: nix develop --command elm-analyse
-      - run: nix develop --command elm make --optimize src/Main.elm
+      - working-directory: website
+        shell: nix develop .#website --command sh {0}
+        run: bun install
+          && bun run lint
+          && bun run check
+          && bun run build
 
-      - uses: actions/upload-pages-artifact@v1
+      - working-directory: resume
+        shell: nix develop .#resume --command sh {0}
+        run: elm-format --validate src
+          && elm-analyse
+          && elm make --optimize src/Main.elm
+
+      - run: mv resume website/build
+      - uses: actions/upload-pages-artifact@v2
         with:
-          path: .
+          path: website/build
 
   deploy:
     needs: build
@@ -38,4 +48,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v3
