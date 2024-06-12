@@ -221,7 +221,7 @@ iconColumn =
             ]
             { src =
                 "https://raw.githubusercontent.com"
-                    ++ "/NixOS/nixos-artwork/master/logo/white.svg"
+                    ++ "/NixOS/nixos-artwork/master/logo/nix-snowflake-white.svg"
             , description = "NixOS"
             }
         ]
